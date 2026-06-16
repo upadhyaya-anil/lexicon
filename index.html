@@ -397,13 +397,10 @@ function onSearch() {
   filtered = prefix.length > 0 ? prefix : WORDS.filter(w => w.toLowerCase().includes(q));
   renderList();
 
-  const exact = filtered.findIndex(w => w.toLowerCase() === q);
-  if (exact !== -1) {
-    selectWord(exact);
-  } else {
-    detailEl.classList.remove("visible");
-    detailEl.innerHTML = EMPTY_DETAIL_HTML;
-  }
+  // Never auto-show definition while typing on mobile —
+  // user must tap a word explicitly
+  detailEl.classList.remove("visible");
+  detailEl.innerHTML = EMPTY_DETAIL_HTML;
 }
 
 searchEl.addEventListener("input", onSearch);
