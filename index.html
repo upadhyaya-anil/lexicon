@@ -50,7 +50,7 @@
   #splash {
     position: fixed; inset: 0; background: var(--bg);
     display: flex; flex-direction: column; align-items: center;
-    justify-content: center; gap: 20px; z-index: 100;
+    justify-content: center; gap: 20px; z-index: 200;
     transition: opacity 0.3s ease;
   }
   #splash.hidden { opacity: 0; pointer-events: none; }
@@ -65,7 +65,7 @@
 
   /* Ready badge */
   #status-badge {
-    position: fixed; top: 14px; right: 16px;
+    position: fixed; top: 14px; right: 52px;
     font-size: 11px; font-weight: 600; letter-spacing: 0.4px;
     padding: 4px 10px; border-radius: 20px;
     opacity: 0; transition: opacity 0.3s;
@@ -82,7 +82,53 @@
     padding: 14px 16px 10px; background: var(--bg);
     border-bottom: 1px solid var(--border); flex-shrink: 0;
   }
-  header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 10px; }
+  .header-top {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 10px;
+  }
+  header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .menu-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); padding: 4px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .menu-btn:hover { background: var(--surface); color: var(--text); }
+
+  /* Settings dropdown */
+  #settings-menu {
+    position: absolute; top: 52px; right: 16px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 16px;
+    z-index: 100; min-width: 220px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    display: none;
+  }
+  #settings-menu.open { display: block; }
+  .settings-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+  }
+  .source-option {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 0; cursor: pointer;
+    border-bottom: 1px solid var(--border);
+  }
+  .source-option:last-child { border-bottom: none; }
+  .source-option input[type="radio"] { margin-top: 3px; accent-color: var(--accent); flex-shrink: 0; }
+  .source-info {}
+  .source-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .experimental-tag {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.4px;
+    text-transform: uppercase; color: #b45309; background: #fef3c7;
+    padding: 2px 6px; border-radius: 10px; margin-left: 6px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .experimental-tag { color: #fbbf24; background: #451a03; }
+  }
+  .source-desc { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+
+  /* Search */
   .search-wrap { position: relative; }
   .search-wrap svg {
     position: absolute; left: 10px; top: 50%;
@@ -98,7 +144,7 @@
   #count { margin-top: 8px; font-size: 12px; color: var(--muted); min-height: 16px; }
 
   /* Layout */
-  .layout { display: flex; flex: 1; overflow: hidden; }
+  .layout { display: flex; flex: 1; overflow: hidden; position: relative; }
   #list {
     width: 140px; flex-shrink: 0; overflow-y: auto;
     border-right: 1px solid var(--border); -webkit-overflow-scrolling: touch;
@@ -122,7 +168,12 @@
     flex: 1; overflow-y: auto; padding: 20px 16px 32px;
     -webkit-overflow-scrolling: touch;
   }
-  .word-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 16px; }
+  .word-title { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .source-tag {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.8px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
+    display: block;
+  }
   .sense { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
   .sense:last-child { border-bottom: none; margin-bottom: 0; }
   .pos-tag {
@@ -132,17 +183,60 @@
     background: var(--tag-bg); color: var(--tag-text); margin-bottom: 8px;
   }
   .definition { font-size: 15px; line-height: 1.6; margin-bottom: 8px; }
+  .definition a {
+    color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent);
+  }
+  .definition a:hover { border-bottom-style: solid; }
   .example {
     font-size: 14px; line-height: 1.6; color: var(--muted);
     font-style: italic; padding-left: 12px; border-left: 3px solid var(--border);
   }
 
-  /* Mobile: single panel */
+  /* Debug panel */
+  #debug-panel {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(0,0,0,0.88); color: #00ff88;
+    font-family: "Menlo", "Courier New", monospace; font-size: 11px;
+    padding: 10px 14px 14px; line-height: 1.8;
+    backdrop-filter: blur(6px);
+    transform: translateY(0); transition: transform 0.3s ease;
+  }
+  #debug-panel.hidden { transform: translateY(100%); }
+  #debug-title {
+    font-size: 10px; font-weight: bold; letter-spacing: 1px;
+    color: #aaa; margin-bottom: 4px; display: flex;
+    justify-content: space-between; align-items: center;
+  }
+  #debug-close {
+    background: #333; border: none; color: #aaa; font-size: 10px;
+    padding: 2px 8px; border-radius: 4px; cursor: pointer;
+    font-family: inherit; letter-spacing: 0.5px;
+  }
+  .debug-row { display: flex; justify-content: space-between; gap: 16px; }
+  .debug-label { color: #888; }
+  .debug-val { color: #00ff88; font-weight: bold; }
+  .debug-val.warn { color: #ffaa00; }
+  .debug-val.bad  { color: #ff4444; }
+
+  /* Mobile */
   @media (max-width: 480px) {
+    body { flex-direction: column-reverse; }
+    header {
+      order: 2; border-bottom: none; border-top: 1px solid var(--border);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    }
+    .header-top { margin-bottom: 8px; }
+    .layout { order: 1; }
+    #count { display: none; } /* shown inline above list instead */
+    #list-count {
+      display: block; font-size: 12px; color: var(--muted);
+      padding: 8px 16px 4px;
+    }
     #list { width: 100%; border-right: none; }
     #detail {
       display: none; position: fixed; inset: 0; z-index: 10;
-      background: var(--bg); padding: 16px 16px 40px;
+      background: var(--bg); padding: 16px 16px 100px;
+      overflow-y: auto;
     }
     #detail.visible { display: block; }
     .back-btn {
@@ -151,8 +245,17 @@
       cursor: pointer; background: none; border: none; padding: 0;
       font-family: var(--ff);
     }
+    /* Swipe-back edge hint */
+    #swipe-edge {
+      position: fixed; top: 0; left: 0; width: 24px; height: 100%;
+      z-index: 11; touch-action: pan-y;
+    }
   }
-  @media (min-width: 481px) { .back-btn { display: none; } }
+  @media (min-width: 481px) {
+    .back-btn { display: none; }
+    #list-count { display: none; }
+    #swipe-edge { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -165,8 +268,35 @@
 
 <div id="status-badge"></div>
 
+<div id="settings-menu" role="dialog" aria-label="Settings">
+  <div class="settings-label">Dictionary Source</div>
+  <label class="source-option">
+    <input type="radio" name="source" value="wordset" checked>
+    <div class="source-info">
+      <div class="source-name">Wordset</div>
+      <div class="source-desc">170k words · conversational tone · includes example sentences</div>
+    </div>
+  </label>
+  <label class="source-option">
+    <input type="radio" name="source" value="wordnet">
+    <div class="source-info">
+      <div class="source-name">WordNet <span class="experimental-tag">Experimental</span></div>
+      <div class="source-desc">Princeton University · precise definitions · may not find every word</div>
+    </div>
+  </label>
+</div>
+
 <header>
-  <h1>Lexico</h1>
+  <div class="header-top">
+    <h1>Lexico</h1>
+    <button class="menu-btn" id="menu-btn" aria-label="Settings" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <circle cx="12" cy="5"  r="1.5"/>
+        <circle cx="12" cy="12" r="1.5"/>
+        <circle cx="12" cy="19" r="1.5"/>
+      </svg>
+    </button>
+  </div>
   <div class="search-wrap">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -178,6 +308,7 @@
 </header>
 
 <div class="layout">
+  <div id="list-count"></div>
   <div id="list" role="listbox" aria-label="Word suggestions">
     <div class="hint">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -186,6 +317,7 @@
       <span>Start typing to search</span>
     </div>
   </div>
+  <div id="swipe-edge"></div>
   <div id="detail" role="region" aria-label="Definition">
     <div class="hint">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -196,24 +328,97 @@
   </div>
 </div>
 
-<script>
-const GITHUB_RAW = "https://raw.githubusercontent.com/wordset/wordset-dictionary/master/data";
+<div id="debug-panel">
+  <div id="debug-title">
+    <span>🔧 DEBUG</span>
+    <button id="debug-close" onclick="closeDebug()">Hide</button>
+  </div>
+  <div class="debug-row"><span class="debug-label">Source</span>        <span class="debug-val" id="dbg-source">—</span></div>
+  <div class="debug-row"><span class="debug-label">Word list fetch</span><span class="debug-val" id="dbg-fetch">—</span></div>
+  <div class="debug-row"><span class="debug-label">Words loaded</span>   <span class="debug-val" id="dbg-words">—</span></div>
+  <div class="debug-row"><span class="debug-label">Total load</span>     <span class="debug-val" id="dbg-total">—</span></div>
+  <div class="debug-row"><span class="debug-label">Last def fetch</span> <span class="debug-val" id="dbg-def">—</span></div>
+  <div class="debug-row"><span class="debug-label">Script parse</span>   <span class="debug-val" id="dbg-parse">—</span></div>
+</div>
 
+<script>
+// ── Data sources ──────────────────────────────────────────────────────────
+const SOURCES = {
+  wordset: {
+    label: "Wordset",
+    base: "https://raw.githubusercontent.com/wordset/wordset-dictionary/master/data",
+    letters: "abcdefghijklmnopqrstuvwxyz#".split(""),
+    getWords(chunk)  { return Object.keys(chunk); },
+    getLetter(word)  {
+      const c = word[0].toLowerCase();
+      return /[a-z]/.test(c) ? c : "#";
+    },
+    getSenses(entry) {
+      return (entry.meanings || []).filter(m => m.def).map(m => ({
+        p: m.speech_part || "", d: m.def, e: m.example || ""
+      }));
+    }
+  },
+  wordnet: {
+    label: "WordNet",
+    // Open English WordNet — JSON release on GitHub
+    base: "https://raw.githubusercontent.com/globalwordnet/english-wordnet/main/json",
+    letters: "abcdefghijklmnopqrstuvwxyz".split(""),
+    getWords(chunk)  { return Object.keys(chunk); },
+    getLetter(word)  {
+      const c = word[0].toLowerCase();
+      return /[a-z]/.test(c) ? c : "a";
+    },
+    getSenses(entry) {
+      // WordNet JSON structure: array of sense objects with "definition"
+      const senses = [];
+      (entry.senses || entry.definitions || [entry]).forEach(s => {
+        const def = s.definition || s.gloss || "";
+        if (def) senses.push({ p: s.partOfSpeech || s.pos || "", d: def, e: s.example || "" });
+      });
+      return senses;
+    }
+  }
+};
+
+// ── State ─────────────────────────────────────────────────────────────────
+const T0 = performance.now();
+let currentSource = "wordset";
+let WORDS = [];
+let filtered = [];
+let selectedIndex = -1;
+const cache = { wordset: {}, wordnet: {} }; // letter → parsed chunk
+
+// ── Elements ──────────────────────────────────────────────────────────────
 const searchEl  = document.getElementById("search");
 const listEl    = document.getElementById("list");
 const detailEl  = document.getElementById("detail");
 const countEl   = document.getElementById("count");
+const listCountEl = document.getElementById("list-count");
+function setCount(text) {
+  setCount(text);
+  if (listCountEl) listCountEl.textContent = text;
+}
 const splash    = document.getElementById("splash");
 const splashMsg = document.getElementById("splash-msg");
 const badge     = document.getElementById("status-badge");
+const menuBtn   = document.getElementById("menu-btn");
+const settingsMenu = document.getElementById("settings-menu");
 
-const MAX_SUGGESTIONS = 50;
-let WORDS = [];
-let filtered = [];
-let selectedIndex = -1;
-const ghCache = {};  // letter → parsed JSON, cached after first fetch
+const MAX = 50;
 
-// ── Status badge ─────────────────────────────────────────────────────────
+// ── Debug ─────────────────────────────────────────────────────────────────
+function dbg(id, val, level) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val;
+  el.className = "debug-val" + (level ? " " + level : "");
+}
+function msColor(ms) { return ms < 500 ? "" : ms < 2000 ? "warn" : "bad"; }
+function closeDebug() { document.getElementById("debug-panel").classList.add("hidden"); }
+dbg("dbg-parse", Math.round(performance.now()) + " ms");
+
+// ── Badge ─────────────────────────────────────────────────────────────────
 function showBadge(text) {
   badge.textContent = text;
   badge.classList.add("show");
@@ -225,59 +430,132 @@ function dismissSplash() {
   setTimeout(() => splash.remove(), 300);
 }
 
-// ── Init: fetch word list only (one small index file) ────────────────────
+// ── Settings menu ─────────────────────────────────────────────────────────
+menuBtn.addEventListener("click", e => {
+  e.stopPropagation();
+  const open = settingsMenu.classList.toggle("open");
+  menuBtn.setAttribute("aria-expanded", open);
+});
+document.addEventListener("click", e => {
+  if (!settingsMenu.contains(e.target) && e.target !== menuBtn) {
+    settingsMenu.classList.remove("open");
+    menuBtn.setAttribute("aria-expanded", false);
+  }
+});
+document.querySelectorAll('input[name="source"]').forEach(radio => {
+  radio.addEventListener("change", async () => {
+    currentSource = radio.value;
+    settingsMenu.classList.remove("open");
+    menuBtn.setAttribute("aria-expanded", false);
+    dbg("dbg-source", SOURCES[currentSource].label);
+
+    // Reload word list for new source if not cached
+    if (cache[currentSource] && Object.keys(cache[currentSource]).length > 0) {
+      WORDS = buildWordList(currentSource);
+    } else {
+      splashMsg && (splashMsg.textContent = `Switching to ${SOURCES[currentSource].label}…`);
+      await loadWordList(currentSource);
+    }
+
+    // Clear search and detail
+    searchEl.value = "";
+    filtered = [];
+    selectedIndex = -1;
+    listEl.innerHTML = EMPTY_LIST_HTML;
+    detailEl.innerHTML = EMPTY_DETAIL_HTML;
+    detailEl.classList.remove("visible");
+    setCount(`${WORDS.length.toLocaleString()} words ready · ${SOURCES[currentSource].label}`);
+  });
+});
+
+// ── Word list helpers ─────────────────────────────────────────────────────
+function buildWordList(sourceKey) {
+  const src = SOURCES[sourceKey];
+  const all = [];
+  Object.values(cache[sourceKey]).forEach(chunk => {
+    src.getWords(chunk).forEach(w => all.push(w.trim()));
+  });
+  all.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+  return all;
+}
+
+async function loadWordList(sourceKey) {
+  const src = SOURCES[sourceKey];
+  const fetchStart = performance.now();
+  const results = await Promise.allSettled(
+    src.letters.map(l =>
+      fetch(`${src.base}/${l}.json`).then(r => r.json())
+    )
+  );
+  const fetchMs = Math.round(performance.now() - fetchStart);
+  dbg("dbg-fetch", fetchMs + " ms", msColor(fetchMs));
+
+  results.forEach((r, i) => {
+    if (r.status === "fulfilled") {
+      cache[sourceKey][src.letters[i]] = r.value;
+    }
+  });
+
+  WORDS = buildWordList(sourceKey);
+  dbg("dbg-words", WORDS.length.toLocaleString());
+  dbg("dbg-total", Math.round(performance.now() - T0) + " ms", msColor(performance.now() - T0));
+  dbg("dbg-source", src.label);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
 async function init() {
   try {
-    // Fetch all 27 letter files in parallel — but only extract word keys,
-    // not definitions. Definitions are fetched lazily on word tap.
-    const letters = "abcdefghijklmnopqrstuvwxyz#".split("");
-    const results = await Promise.allSettled(
-      letters.map(l => fetch(`${GITHUB_RAW}/${l}.json`).then(r => r.json()))
-    );
-
-    const allWords = [];
-    results.forEach((r, i) => {
-      if (r.status === "fulfilled") {
-        ghCache[letters[i]] = r.value;  // cache full chunk — already fetched
-        Object.keys(r.value).forEach(w => allWords.push(w.trim()));
-      }
-    });
-
-    allWords.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-    WORDS = allWords;
+    await loadWordList(currentSource);
     showBadge("✓ Ready");
-
-  } catch (e) {
-    // no badge on failure
-    WORDS = [];
+  } catch(e) {
+    setCount("Could not load word list. Check your connection.");
   }
-
   dismissSplash();
-  countEl.textContent = WORDS.length
-    ? `${WORDS.length.toLocaleString()} words ready`
-    : "Could not load word list. Check your connection.";
+  setCount(WORDS.length
+    ? `${WORDS.length.toLocaleString()} words ready · ${SOURCES[currentSource].label}`
+    : countEl.textContent);
   searchEl.focus();
 }
 
-// ── Definition lookup — uses cache, no repeat fetches ────────────────────
-async function getSenses(word) {
-  const firstChar = word[0].toLowerCase();
-  const letter = /[a-z]/.test(firstChar) ? firstChar : "#";
+// ── Definition fetch ──────────────────────────────────────────────────────
+async function getSenses(word, sourceKey) {
+  const src = SOURCES[sourceKey];
+  const letter = src.getLetter(word);
 
-  if (!ghCache[letter]) {
+  if (!cache[sourceKey][letter]) {
     try {
-      const r = await fetch(`${GITHUB_RAW}/${letter}.json`);
-      ghCache[letter] = await r.json();
-    } catch (e) {
-      return null; // null = network error
-    }
+      const r = await fetch(`${src.base}/${letter}.json`);
+      cache[sourceKey][letter] = await r.json();
+    } catch(e) { return null; }
   }
 
-  const entry = ghCache[letter][word];
+  const entry = cache[sourceKey][letter][word];
   if (!entry) return [];
-  return (entry.meanings || [])
-    .filter(m => m.def)
-    .map(m => ({ p: m.speech_part || "", d: m.def, e: m.example || "" }));
+  return src.getSenses(entry);
+}
+
+// ── Hyperlink words in definition ─────────────────────────────────────────
+const WORD_SET = new Set(); // populated after word list loads
+function linkifyDefinition(text) {
+  // Split on word boundaries and wrap known words in links
+  return text.replace(/\b([a-zA-Z]{3,})\b/g, (match) => {
+    const lower = match.toLowerCase();
+    if (WORD_SET.has(lower) && lower !== text.toLowerCase().trim()) {
+      return `<a href="#" onclick="searchWord('${lower}');return false;">${match}</a>`;
+    }
+    return match;
+  });
+}
+function searchWord(word) {
+  searchEl.value = word;
+  // Trigger search and show definition
+  const q = word.toLowerCase();
+  const prefix = WORDS.filter(w => w.toLowerCase().startsWith(q));
+  filtered = prefix.length > 0 ? prefix : WORDS.filter(w => w.toLowerCase().includes(q));
+  selectedIndex = -1;
+  renderList();
+  const exact = filtered.findIndex(w => w.toLowerCase() === q);
+  if (exact !== -1) selectWord(exact);
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -286,6 +564,7 @@ function posLabel(p) {
     noun:"noun", verb:"verb", adjective:"adj.", adverb:"adv.",
     pronoun:"pron.", preposition:"prep.", conjunction:"conj.",
     interjection:"interj.", article:"article", abbreviation:"abbr.",
+    adjective_satellite:"adj.",
   };
   return map[p] || p || "word";
 }
@@ -300,9 +579,15 @@ const EMPTY_DETAIL_HTML = `<div class="hint">
   <span>Select a word to see its definition</span>
 </div>`;
 
-// ── Render word list ──────────────────────────────────────────────────────
+const EMPTY_LIST_HTML = `<div class="hint">
+  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+  </svg><span>Start typing to search</span>
+</div>`;
+
+// ── Render list ───────────────────────────────────────────────────────────
 function renderList() {
-  const shown = filtered.slice(0, MAX_SUGGESTIONS);
+  const shown = filtered.slice(0, MAX);
   const frag  = document.createDocumentFragment();
   shown.forEach((word, i) => {
     const div = document.createElement("div");
@@ -315,17 +600,16 @@ function renderList() {
   });
   listEl.innerHTML = "";
   listEl.appendChild(frag);
-
   if (filtered.length === 0) {
-    countEl.textContent = "No matches found";
-  } else if (filtered.length > MAX_SUGGESTIONS) {
-    countEl.textContent = `Showing 50 of ${filtered.length.toLocaleString()} — keep typing`;
+    setCount("No matches found");
+  } else if (filtered.length > MAX) {
+    setCount(`Showing 50 of ${filtered.length.toLocaleString()} — keep typing`);
   } else {
-    countEl.textContent = `${filtered.length} match${filtered.length === 1 ? "" : "es"}`;
+    setCount(`${filtered.length} match${filtered.length === 1 ? "" : "es"}`);
   }
 }
 
-// ── Select & show definition ──────────────────────────────────────────────
+// ── Select word ───────────────────────────────────────────────────────────
 async function selectWord(i) {
   selectedIndex = i;
   const word = filtered[i];
@@ -344,13 +628,17 @@ async function selectWord(i) {
   detailEl.classList.add("visible");
   detailEl.scrollTop = 0;
 
-  const senses = await getSenses(word);
+  const defStart = performance.now();
+  const senses = await getSenses(word, currentSource);
+  const defMs = Math.round(performance.now() - defStart);
+  dbg("dbg-def", defMs + " ms", msColor(defMs));
 
   let html = `<button class="back-btn" onclick="closeDetail()">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
     Back
   </button>
-  <div class="word-title">${escHtml(word)}</div>`;
+  <div class="word-title">${escHtml(word)}</div>
+  <span class="source-tag">${SOURCES[currentSource].label}</span>`;
 
   if (senses === null) {
     html += `<p class="definition" style="color:var(--muted)">Could not load definition. Check your connection.</p>`;
@@ -360,7 +648,7 @@ async function selectWord(i) {
     senses.forEach(s => {
       html += `<div class="sense">`;
       if (s.p) html += `<span class="pos-tag">${escHtml(posLabel(s.p))}</span>`;
-      html += `<div class="definition">${escHtml(s.d)}</div>`;
+      html += `<div class="definition">${linkifyDefinition(escHtml(s.d))}</div>`;
       if (s.e) html += `<div class="example">"${escHtml(s.e)}"</div>`;
       html += `</div>`;
     });
@@ -383,11 +671,8 @@ function onSearch() {
 
   if (!q) {
     filtered = [];
-    listEl.innerHTML = `<div class="hint">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg><span>Start typing to search</span></div>`;
-    countEl.textContent = `${WORDS.length.toLocaleString()} words ready`;
+    listEl.innerHTML = EMPTY_LIST_HTML;
+    setCount(`${WORDS.length.toLocaleString()} words ready · ${SOURCES[currentSource].label}`);
     detailEl.innerHTML = EMPTY_DETAIL_HTML;
     detailEl.classList.remove("visible");
     return;
@@ -396,20 +681,17 @@ function onSearch() {
   const prefix = WORDS.filter(w => w.toLowerCase().startsWith(q));
   filtered = prefix.length > 0 ? prefix : WORDS.filter(w => w.toLowerCase().includes(q));
   renderList();
-
-  // Never auto-show definition while typing on mobile —
-  // user must tap a word explicitly
+  // Never auto-open definition while typing
   detailEl.classList.remove("visible");
   detailEl.innerHTML = EMPTY_DETAIL_HTML;
 }
 
 searchEl.addEventListener("input", onSearch);
-
 searchEl.addEventListener("keydown", e => {
   const items = listEl.querySelectorAll(".word-item");
   if (e.key === "ArrowDown") {
     e.preventDefault();
-    const next = Math.min(selectedIndex + 1, Math.min(filtered.length, MAX_SUGGESTIONS) - 1);
+    const next = Math.min(selectedIndex + 1, Math.min(filtered.length, MAX) - 1);
     selectWord(next); items[next]?.scrollIntoView({block:"nearest"});
   } else if (e.key === "ArrowUp") {
     e.preventDefault();
@@ -420,9 +702,61 @@ searchEl.addEventListener("keydown", e => {
   }
 });
 
-// no connectivity events needed
+// ── Swipe-from-left-edge to go back (mobile) ──────────────────────────────
+const swipeEdge = document.getElementById("swipe-edge");
+if (swipeEdge) {
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let tracking = false;
 
-init();
+  swipeEdge.addEventListener("touchstart", e => {
+    if (!detailEl.classList.contains("visible")) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    tracking = true;
+  }, { passive: true });
+
+  swipeEdge.addEventListener("touchmove", e => {
+    if (!tracking) return;
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = Math.abs(e.touches[0].clientY - touchStartY);
+    // Require a clear rightward swipe, not a vertical scroll
+    if (dx > 60 && dy < 40) {
+      closeDetail();
+      tracking = false;
+    }
+  }, { passive: true });
+
+  swipeEdge.addEventListener("touchend", () => { tracking = false; });
+}
+
+// Also allow swiping from anywhere on the detail panel itself,
+// not just the narrow edge strip, for a more natural feel
+let detailTouchStartX = 0;
+let detailTouchStartY = 0;
+let detailTracking = false;
+detailEl.addEventListener("touchstart", e => {
+  if (!detailEl.classList.contains("visible")) return;
+  detailTouchStartX = e.touches[0].clientX;
+  detailTouchStartY = e.touches[0].clientY;
+  detailTracking = detailTouchStartX < 40; // only from near the left edge
+}, { passive: true });
+detailEl.addEventListener("touchmove", e => {
+  if (!detailTracking) return;
+  const dx = e.touches[0].clientX - detailTouchStartX;
+  const dy = Math.abs(e.touches[0].clientY - detailTouchStartY);
+  if (dx > 60 && dy < 40) {
+    closeDetail();
+    detailTracking = false;
+  }
+}, { passive: true });
+detailEl.addEventListener("touchend", () => { detailTracking = false; });
+
+// ── Boot ──────────────────────────────────────────────────────────────────
+init().then(() => {
+  // Populate word set for hyperlinking after words are loaded
+  WORDS.forEach(w => WORD_SET.add(w.toLowerCase()));
+});
 </script>
 </body>
 </html>
